@@ -1,25 +1,41 @@
 pragma solidity ^0.5.4;
 
 import "../Shared/Owned.sol";
+// import "../Dependencies/verifier.sol";
 
 contract MiMC{
     function MiMCpe7(uint256,uint256,uint256,uint256) public pure returns (uint256) {}
 }
-
+contract Verifier {
+    function verifyProof(
+          uint[2] memory a,
+          uint[2][2] memory b,
+          uint[2] memory c,
+          uint[1] memory input
+    ) view public returns (bool) {}
+}
 
 contract MinimalMixer is Owned {
 
-    MiMC mimc;
+    MiMC public mimc;
+    Verifier public verifier;
+    event Deposited(uint256 amount);
 
     constructor () public {
       initOwned(msg.sender);
     }
 
-    function init(address _mimc) public onlyOwner {
+    function setMiMC(address _mimc) public onlyOwner {
       mimc = MiMC(_mimc);
     }
+    function setVerifier(address _verifier) public onlyOwner {
+      verifier = Verifier(_verifier);
+    }
 
-    function deposit(bytes32 commitment) public payable {}
+    function deposit(bytes32 commitment) public payable {
+      emit Deposited(msg.value);
+    }
+
     function withdraw(address destination, bytes memory proof) public view {
       uint fee = calculateFee();
     }
